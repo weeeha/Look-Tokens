@@ -188,7 +188,7 @@ git commit -m "Guard composed prompts against gen4_image's 1000-unit limit"
 - Consumes: `POST /api/render`, `GET /api/render/config`, `recordRenders`, `normalize`, `ShotView`, `RenderEntry`.
 - Produces:
   - `session.ts`: `mockShown(views: ShotView[]): ShotView[]`, the views whose `display?.kind === "mock"` and whose `key` is not null.
-  - `client.ts`: `fetchRenderConfig(): Promise<{ live: boolean; creditsPerImage: number }>` (resolves `{ live: false, creditsPerImage: 5 }` on any network error); `requestRender(view: ShotView, mode: "cache" | "generate"): Promise<{ ok: true; entry: RenderEntry } | { ok: false; status: number; error: string }>`, where `entry` is `{ kind: "live", url, prompt: view.composition.prompt, at }`. The posted body carries `view.shot.ratio`, `shotSeed(view.shot.id)` and `imageGen.target.model`.
+  - `client.ts`: `fetchRenderConfig(): Promise<{ live: boolean; creditsPerImage: number }>` (resolves `{ live: false, creditsPerImage: 5 }` on any network error); `requestRender(view: ShotView, mode: "cache" | "generate"): Promise<{ ok: true; entry: RenderEntry } | { ok: false; status: number; error: string }>`, where `entry` is `{ kind: "live", url, prompt: view.composition.prompt, at }`. The posted body carries `view.shot.ratio`, `shotSeed(view.shot.id)` and `imageGen.target.model`, sent with `content-type: application/json` (the route answers 415 to anything else).
   - The hook additionally returns `live: boolean`, `creditsPerImage: number`, `rendering: string[]` (shot ids in flight), `errors: Record<string, string>` (shot id to message, not persisted), `mockCount: number`, `renderLive(): void`, `retry(shotId: string): void`.
 
 - [ ] **Step 1: Write the failing test**
@@ -246,7 +246,7 @@ Nick copies `.env.local.example` to `.env.local` and pastes his own `RUNWAYML_AP
 
 - [ ] **Step 2: One render**
 
-Restart `pnpm dev`. `GET /api/render/config` gives `live: true`. In the page, click `Render 6 shots live · 30 credits`. Expected: six images replace the six STUB frames; `.renders/` holds six images and six `.json` sidecars, each with `credits: 5`.
+Restart the dev server bound to this machine only, `pnpm dev -H 127.0.0.1` (plain `next dev` listens on every network interface). `GET /api/render/config` gives `live: true`. In the page, click `Render 6 shots live · 30 credits`. Expected: six images replace the six STUB frames; `.renders/` holds six images and six `.json` sidecars, each with `credits: 5`.
 
 - [ ] **Step 3: Read the six stills before spending more**
 
