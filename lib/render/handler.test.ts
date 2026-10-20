@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderKey } from "../engine/key";
-import type { RenderCache, RenderEntry } from "./cache";
+import type { CachedRender, RenderCache } from "./cache";
 import { handleRender, type RenderDeps } from "./handler";
 
 const VALID = {
@@ -12,8 +12,8 @@ const VALID = {
 };
 const VALID_KEY = renderKey({ model: "gen4_image", ratio: "16:9", seed: 7, prompt: "Medium shot. A robot." });
 
-function memoryCache(seed: string[] = []): RenderCache & { has(key: string): boolean } {
-  const store = new Map<string, RenderEntry>(
+function memoryCache(seed: string[] = []): RenderCache {
+  const store = new Map<string, CachedRender>(
     seed.map((k) => [k, { path: `/memory/${k}.png`, contentType: "image/png" }]),
   );
   return {
@@ -23,7 +23,6 @@ function memoryCache(seed: string[] = []): RenderCache & { has(key: string): boo
     async write(key, _bytes, contentType) {
       store.set(key, { path: `/memory/${key}`, contentType });
     },
-    has: (key) => store.has(key),
   };
 }
 
@@ -34,7 +33,7 @@ function setup(over: Partial<RenderDeps> = {}) {
   }));
   const cache = memoryCache();
   const deps: RenderDeps = { cache, live: true, generate, ...over };
-  return { deps, generate, cache: deps.cache as ReturnType<typeof memoryCache> };
+  return { deps, generate, cache: deps.cache };
 }
 
 describe("handleRender", () => {
