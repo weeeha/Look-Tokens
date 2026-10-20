@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -53,5 +53,29 @@ describe("diskCache", () => {
   it("find returns null for a missing key", async () => {
     const cache = diskCache(dir);
     expect(await cache.find(KEY)).toBeNull();
+  });
+
+  it("find refuses a traversal key, even when the file it points at exists", async () => {
+    const parent = await mkdtemp(path.join(tmpdir(), "render-parent-"));
+    try {
+      const inner = path.join(parent, "cache");
+      await mkdir(inner);
+      await writeFile(path.join(parent, "x.png"), BYTES);
+      expect(await diskCache(inner).find("../x")).toBeNull();
+    } finally {
+      await rm(parent, { recursive: true, force: true });
+    }
+  });
+
+  it("write rejects a traversal key and writes nothing outside the cache folder", async () => {
+    const parent = await mkdtemp(path.join(tmpdir(), "render-parent-"));
+    try {
+      const cache = diskCache(path.join(parent, "cache"));
+      await expect(cache.write("../x", BYTES, "image/png", {})).rejects.toThrow();
+      await expect(cache.write("../" + "a".repeat(61), BYTES, "image/png", {})).rejects.toThrow();
+      expect(await readdir(parent)).toEqual([]);
+    } finally {
+      await rm(parent, { recursive: true, force: true });
+    }
   });
 });

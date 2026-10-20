@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderKey } from "../engine/key";
 import type { CachedRender, RenderCache } from "./cache";
-import { handleRender, type RenderDeps } from "./handler";
+import { handleRender, isJsonContentType, type RenderDeps } from "./handler";
 
 const VALID = {
   prompt: "Medium shot. A robot.",
@@ -54,6 +54,13 @@ describe("handleRender", () => {
 
   it("cache mode answers 404 on a miss", async () => {
     const { deps, generate } = setup({ live: true });
+    const res = await handleRender({ ...VALID, mode: "cache" }, deps);
+    expect(res.status).toBe(404);
+    expect(generate).not.toHaveBeenCalled();
+  });
+
+  it("cache mode answers 404 on a miss when live is off, and never calls the provider", async () => {
+    const { deps, generate } = setup({ live: false });
     const res = await handleRender({ ...VALID, mode: "cache" }, deps);
     expect(res.status).toBe(404);
     expect(generate).not.toHaveBeenCalled();
@@ -146,5 +153,28 @@ describe("handleRender", () => {
       expect(res.status).toBe(400);
       expect(generate).not.toHaveBeenCalled();
     }
+  });
+});
+
+describe("isJsonContentType", () => {
+  it("accepts application/json, any case, with optional parameters", () => {
+    expect(isJsonContentType("application/json")).toBe(true);
+    expect(isJsonContentType("Application/JSON")).toBe(true);
+    expect(isJsonContentType("application/json; charset=utf-8")).toBe(true);
+    expect(isJsonContentType("application/json;charset=UTF-8")).toBe(true);
+  });
+
+  it("rejects null and the types a cross-site form or no-cors fetch can send", () => {
+    expect(isJsonContentType(null)).toBe(false);
+    expect(isJsonContentType("")).toBe(false);
+    expect(isJsonContentType("text/plain")).toBe(false);
+    expect(isJsonContentType("text/plain;charset=UTF-8")).toBe(false);
+    expect(isJsonContentType("application/x-www-form-urlencoded")).toBe(false);
+    expect(isJsonContentType("multipart/form-data; boundary=----x")).toBe(false);
+  });
+
+  it("rejects look-alike types", () => {
+    expect(isJsonContentType("application/jsonp")).toBe(false);
+    expect(isJsonContentType("text/json")).toBe(false);
   });
 });

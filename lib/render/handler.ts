@@ -32,6 +32,13 @@ export interface RenderResult {
 
 const MAX_SEED = 4294967295;
 
+// POST /api/render spends credits, so the route accepts only application/json.
+// A cross-site page can send text/plain, form and multipart bodies without a
+// CORS preflight; JSON forces one, and this server answers no preflight.
+export function isJsonContentType(value: string | null): boolean {
+  return value !== null && value.split(";")[0].trim().toLowerCase() === "application/json";
+}
+
 const fail = (status: number, error: string): RenderResult => ({ status, body: { error } });
 
 function isRatio(s: unknown): s is keyof typeof RUNWAY_RATIO {
