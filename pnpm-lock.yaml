@@ -11,6 +11,9 @@ importers:
       '@noble/hashes':
         specifier: ^2.4.0
         version: 2.4.0
+      '@runwayml/sdk':
+        specifier: 4.22.0
+        version: 4.22.0
       idb-keyval:
         specifier: ^6.3.0
         version: 6.3.0
@@ -571,6 +574,10 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
+
+  '@runwayml/sdk@4.22.0':
+    resolution: {integrity: sha512-iIThHD57AdGIK61QlPHUSn8p0qmeCedF/GVIRLbp3TCGpEnRxCP+wg9zITh1zSzKLe4gxSpCK20sDkpVZwQymg==}
+    hasBin: true
 
   '@swc/helpers@0.5.23':
     resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
@@ -2782,6 +2789,8 @@ snapshots:
   '@rolldown/pluginutils@1.0.1': {}
 
   '@rtsao/scc@1.1.0': {}
+
+  '@runwayml/sdk@4.22.0': {}
 
   '@swc/helpers@0.5.23':
     dependencies:
