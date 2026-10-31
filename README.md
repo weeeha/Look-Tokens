@@ -1,5 +1,13 @@
 # Look Tokens
 
+**Problem.** Prompt-based film work repeats a look as adjectives across many prompts, and the copies drift apart.
+
+**Idea.** A film's look lives in one table of tokens. Shots reference tokens, a per-tool adapter composes each prompt at render time, and editing one value offers to re-render every shot that uses it, with the old value kept for rollback.
+
+**Built.** A Next.js app with a pure TypeScript engine (no React, Next or I/O imports, enforced by ESLint), a token table, shot cards, an apply panel, before/after rows and a history drawer. The demo is Scene 15 of Post-Collapse Montreal, and a Runway `gen4_image` render route exists behind a server flag. 14 commits on 5 days, Sep 21 to Oct 30, 2026.
+
+**Decision.** Renders are mocked by default, and real Runway renders run only where `RENDER_LIVE=1` is set on the server, so a public visitor never spends credits.
+
 Cinematography as a design token system. A film's look lives in one table of tokens. Shots reference tokens instead of repeating adjectives, and each shot's prompt is composed at render time by a per-tool adapter. Edit one value and every shot that uses it re-renders, with the old value kept for rollback.
 
 Demo content is Scene 15 of Post-Collapse Montreal, transcribed from the film's token file. Values tagged `proposed` have no citation in the source recordings.
