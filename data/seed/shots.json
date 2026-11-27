@@ -8,7 +8,7 @@
     "actionCitations": ["[J27 29:41]", "[A01 08:16]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "bot/restaurant", "loc/restaurant"],
+    "refs": ["look/overgrown-interior", "bot/restaurant", "loc/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["shotSize", "ratio", "refs"]
   },
   {
@@ -20,7 +20,7 @@
     "actionCitations": ["[J27 30:25]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "loc/restaurant", "bot/restaurant"],
+    "refs": ["look/overgrown-interior", "loc/restaurant", "bot/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["shotSize", "ratio", "refs"]
   },
   {
@@ -32,7 +32,7 @@
     "actionCitations": ["[A01 09:13]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/carafe", "loc/restaurant"],
+    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/carafe", "loc/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["ratio", "refs"]
   },
   {
@@ -44,7 +44,7 @@
     "actionCitations": ["[J27 30:53]", "[A01 09:13]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/carafe", "loc/restaurant"],
+    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/carafe", "loc/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["ratio", "refs"]
   },
   {
@@ -56,7 +56,7 @@
     "actionCitations": ["[J27 30:53]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "prop/carafe", "bot/restaurant"],
+    "refs": ["look/overgrown-interior", "prop/carafe", "bot/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["ratio", "refs"]
   },
   {
@@ -68,7 +68,7 @@
     "actionCitations": ["[A01 10:13]"],
     "era": "post",
     "ratio": "16:9",
-    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/cable", "loc/restaurant"],
+    "refs": ["look/overgrown-interior", "bot/restaurant", "prop/cable", "loc/restaurant", "world/overgrown-not-destroyed", "world/degraded-lesser-ai", "world/most-people-died", "voice/restaurant-robot"],
     "proposedFields": ["shotSize", "ratio", "refs"]
   }
 ]

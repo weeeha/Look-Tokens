@@ -55,7 +55,7 @@ export function ShotCard({ view, highlighted, onChip }: Props) {
       {composition.ok ? (
         <details className="mt-2 text-xs">
           <summary className={`cursor-pointer rounded-md py-1 text-zinc-500 ${FOCUS}`}>Composed prompt</summary>
-          <p className="mt-1 font-mono leading-relaxed">{composition.prompt}</p>
+          <p className="mt-1 font-mono leading-relaxed whitespace-pre-line">{composition.prompt}</p>
         </details>
       ) : (
         <p className="mt-2 text-xs text-red-700">Does not compose: {unresolved.join(", ")} not found.</p>

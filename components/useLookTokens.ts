@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { imageGen } from "@/lib/engine/adapters/image-gen";
+import { seedance } from "@/lib/engine/adapters/seedance";
+import type { Adapter } from "@/lib/engine/adapters/types";
+import { compose } from "@/lib/engine/compose";
 import { applyEdits, exportSeed, makeEdit } from "@/lib/engine/edits";
 import { usage } from "@/lib/engine/usage";
 import { mockSvg } from "@/lib/providers/mock";
@@ -22,7 +25,11 @@ import {
 } from "@/lib/session";
 import { idbBackend, openStore, type SessionStore } from "@/lib/store/browser-store";
 
+// Renders, render keys and staleness always follow image-gen. The switch picks which
+// adapter composes the prompt text and USED BY (spec section 6: Seedance is text only).
 const adapter = imageGen;
+export const ADAPTERS = { "image-gen": imageGen, seedance } satisfies Record<Adapter["id"], Adapter>;
+export type AdapterId = keyof typeof ADAPTERS;
 
 function derive(session: Session) {
   const { groups, conflicts } = applyEdits(seed.groups, session.log);
@@ -54,6 +61,7 @@ function normalize(session: Session): Session {
 export function useLookTokens() {
   const [session, setSession] = useState<Session | null>(null);
   const [persistent, setPersistent] = useState(true);
+  const [adapterId, setAdapterId] = useState<AdapterId>("image-gen");
   const storeRef = useRef<SessionStore | null>(null);
 
   useEffect(() => {
@@ -76,10 +84,16 @@ export function useLookTokens() {
   }, [session]);
 
   const derived = useMemo(() => (session ? derive(session) : null), [session]);
+  const textAdapter = ADAPTERS[adapterId];
   const usedBy = useMemo(
-    () => (derived ? usage(derived.groups, seed.shots, adapter) : new Map<string, string[]>()),
-    [derived],
+    () => (derived ? usage(derived.groups, seed.shots, textAdapter) : new Map<string, string[]>()),
+    [derived, textAdapter],
   );
+  const views = useMemo(() => {
+    if (!derived) return [];
+    if (textAdapter === adapter) return derived.views;
+    return derived.views.map((v) => ({ ...v, composition: compose(v.shot, derived.groups, textAdapter) }));
+  }, [derived, textAdapter]);
 
   const edit = useCallback((path: string, to: string) => {
     setSession((s) => {
@@ -117,7 +131,9 @@ export function useLookTokens() {
     ready: session !== null && derived !== null,
     groups: derived?.groups ?? [],
     conflicts: derived?.conflicts ?? [],
-    views: derived?.views ?? [],
+    views,
+    adapterId,
+    setAdapterId,
     usedBy,
     pending: session ? pendingEdits(session) : [],
     staleCount: derived ? staleViews(derived.views).length : 0,

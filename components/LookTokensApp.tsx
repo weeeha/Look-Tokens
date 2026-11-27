@@ -9,7 +9,13 @@ import { HistoryDrawer } from "./HistoryDrawer";
 import { ShotCard } from "./ShotCard";
 import { TokenTable } from "./TokenTable";
 import { Toolbar } from "./Toolbar";
-import { useLookTokens } from "./useLookTokens";
+import { useLookTokens, type AdapterId } from "./useLookTokens";
+
+const FOCUS = "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-sky-700 focus-visible:ring-offset-2";
+const ADAPTER_LABELS: [AdapterId, string][] = [
+  ["image-gen", "Image-gen"],
+  ["seedance", "Seedance"],
+];
 
 export function LookTokensApp() {
   const t = useLookTokens();
@@ -27,7 +33,21 @@ export function LookTokensApp() {
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-zinc-200 pb-4">
         <div>
           <h1 className="text-xl font-semibold">Look Tokens</h1>
-          <p className="text-sm text-zinc-500">Post-Collapse Montreal · Scene 15 · image-gen adapter</p>
+          <p className="text-sm text-zinc-500">Post-Collapse Montreal · Scene 15</p>
+        </div>
+        <div role="group" aria-label="Adapter" className="flex items-center gap-2 text-sm">
+          <span className="text-zinc-500">Adapter</span>
+          {ADAPTER_LABELS.map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={t.adapterId === id}
+              onClick={() => t.setAdapterId(id)}
+              className={`rounded-md border border-zinc-300 px-3 py-1 ${t.adapterId === id ? "bg-zinc-100" : ""} ${FOCUS}`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
         <Toolbar
           persistent={t.persistent}
